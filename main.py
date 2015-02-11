@@ -1,8 +1,7 @@
 #!/usr/bin/env python2
-import json
 import random
-import socket
 
+from Regius.network import Network
 
 ip = "localhost"
 port = 31337
@@ -15,29 +14,14 @@ movements = {"up": 1<<0,
              "return": 1<<5}
 
 
-def write(sock, msg):
-    sock.sendall(str(msg)+"\n")
-
-def read(sock):
-    try:
-        msg = sock.recv(2048)
-        return msg
-    except:
-        pass
 
 def main():
-    sock = socket.socket()
-    sock.connect((ip, port))
-
-    msg = read(sock)
-    data = json.loads(msg)
-    write(sock, 1<<5) # Tell the server we are ready
-
-    sock.setblocking(0)
+    net = Network(ip, port)
+    net.write(1<<5)
+    net.write(1<<0)
     while True:
-        move = random.choice(movements.values())
-        write(sock, move)
-        msg = read(sock)
+        net.read()
+        net.write(random.choice(movements.values()))
 
 
 if __name__ == "__main__":
