@@ -2,6 +2,7 @@
 import random
 
 from Regius.network import Network
+from Regius.car import Car
 
 ip = "localhost"
 port = 31337
@@ -16,12 +17,17 @@ movements = {"up": 1<<0,
 
 
 def main():
+    car = Car()
     net = Network(ip, port)
-    net.write(1<<5)
-    net.write(1<<0)
+    net.write(car.name)
+    net.write(movements["return"])
+
+    data = net.read()
+    car.initmap(data)
+
     while True:
         net.read()
-        net.write(random.choice(movements.values()))
+        net.write(0)
 
 
 if __name__ == "__main__":

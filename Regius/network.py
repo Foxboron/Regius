@@ -4,7 +4,7 @@ import json
 
 
 class Network(object):
-    def __init__(ip, port):
+    def __init__(self, ip, port):
         self.ip = ip
         self.port = port
         self.soc = socket.socket()
@@ -12,6 +12,7 @@ class Network(object):
         self.block = False
 
     def read(self):
+        data = 0
         try:
             ret = sock.makefile().readline()
             data = json.loads(ret)
@@ -22,10 +23,14 @@ class Network(object):
             # Just easier to handle it this way
             self.soc.setblocking(0)
             self.block = True
+
         return data
 
     def write(self, msg):
-        self.soc.sendall(str(msg)+"\n")
+        try:
+            self.soc.sendall(str(msg)+"\n")
+        except:
+            pass
 
 
 
