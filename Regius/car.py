@@ -1,6 +1,6 @@
 import json
 import math
-from Regius.map import TileMap
+from tilemap import TileMap
 
 class Car(object):
     waypoints = []
@@ -12,3 +12,6 @@ class Car(object):
         self.nexttile = 1
 
         self.tilemap = TileMap()
+
+    def initmap(self, data):
+        self.tilemap.initmap(data)

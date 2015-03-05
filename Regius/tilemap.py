@@ -17,11 +17,11 @@ class TileMap(object):
         "ice": 20
     }
 
-    def __init__(self, data):
-        self.initmap(data)
+    def __init__(self):
+        self.name = "map"
 
     def initmap(self, data):
-        self.tile_width = data["map"]["tile_width"]
+        '''self.tile_width = data["map"]["tile_width"]
         self.tile_height = data["map"]["tile_height"]
         self.map_height = len(data["map"]["tiles"][0])
         self.map_width = len(data["map"]["tiles"])
@@ -35,7 +35,7 @@ class TileMap(object):
             for column in self.map_width:
                 self.mapcost[column][row] = self.tilecost[data["map"]["tiles"][column][row]]
 
-        print self.mapcost
+        print self.mapcost'''
         self.init = True
 
 

@@ -26,8 +26,8 @@ def main():
     car.initmap(data)
 
     while True:
+        net.write(movements["up"])
         net.read()
-        net.write(0)
 
 
 if __name__ == "__main__":
