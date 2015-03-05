@@ -9,9 +9,10 @@ class TileMap(object):
         '-': 10,
         '|': 10,
         ',': 10,
-        "´": 10,
+        "`": 10,
         '/': 10,
         '\\': 10,
+        '.': 20,
         "mud": 30,
         "booster": 0,
         "ice": 20
@@ -21,7 +22,7 @@ class TileMap(object):
         self.name = "map"
 
     def initmap(self, data):
-        '''self.tile_width = data["map"]["tile_width"]
+        self.tile_width = data["map"]["tile_width"]
         self.tile_height = data["map"]["tile_height"]
         self.map_height = len(data["map"]["tiles"][0])
         self.map_width = len(data["map"]["tiles"])
@@ -31,11 +32,12 @@ class TileMap(object):
         for x in range(self.map_width):
             self.mapcost.append([])
 
-        for row in self.map_height:
-            for column in self.map_width:
-                self.mapcost[column][row] = self.tilecost[data["map"]["tiles"][column][row]]
+        for row in range(self.map_height):
+            for column in range(self.map_width):
+                self.mapcost[column].append(self.tilecost[data["map"]["tiles"][column][row]])
 
-        print self.mapcost'''
+        print self.mapcost
+
         self.init = True
 
 

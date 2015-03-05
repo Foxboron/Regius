@@ -1,4 +1,5 @@
 import socket
+import sys
 import json
 
 
@@ -12,9 +13,9 @@ class Network(object):
         self.block = False
 
     def read(self):
-        data = 0
+        data = None
         try:
-            ret = sock.makefile().readline()
+            ret = self.soc.makefile().readline()
             data = json.loads(ret)
         except:
             pass
