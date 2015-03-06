@@ -3,6 +3,7 @@ import math
 from tilemap import TileMap
 from collections import deque
 
+
 class Car(object):
     waypoints = []
     enemies = []
@@ -63,27 +64,6 @@ class Car(object):
                 self.commandlist.append(self.movements["right"])
         else:
             self.commandlist.append(self.movements["up"])
-
-
-    def dotproduct(self, vec1, vec2):
-        return sum([vec1[i]*vec2[i] for i in range(len(vec1))])
-
-    def distance(self, pos1, pos2):
-        return (pos2[0] - pos1[0], pos2[1] - pos1[1])
-
-    def vectorlen(self, vector):
-        return math.sqrt(math.pow(vector[0], 2) + math.pow(vector[1], 2))
-
-    def normalized(self, vector):
-        veclen = self.vectorlen(vector)
-        return (vector[0] / veclen, vector[1] / veclen)
-
-    def multiply(self, vector, factor):
-        return (vector[0] * factor, vector[1] * factor)
-
-    def angle(self, vec1, vec2):
-        rads = math.atan2(-vec2[1], vec2[0]) - math.atan2(-vec1[1], vec1[0])
-        return math.degrees(rads)
 
     def getmove(self):
         output = 0
