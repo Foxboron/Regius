@@ -41,7 +41,10 @@ class TileMap(object):
 
 
     def pixeltotile(self, pixel):
-        return (math.floor(pixel[0]/self.tile_width), math.floor(pixel[1]/self.tile_height))
+        return (int(math.floor(pixel[0]/self.tile_width)), int(math.floor(pixel[1]/self.tile_height)))
+
+    def pixelintile(self, pixel, tile):
+        return self.pixeltotile(pixel) == tile
 
     def tilecenter(self, tile):
         return (tile[0]*self.tile_width-(self.tile_width/2), tile[1]*self.tile_height-(self.tile_height/2))
