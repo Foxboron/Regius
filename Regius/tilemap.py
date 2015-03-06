@@ -19,7 +19,7 @@ class TileMap(object):
     }
 
     def __init__(self):
-        self.name = "map"
+        pass
 
     def initmap(self, data):
         self.tile_width = data["map"]["tile_width"]
@@ -36,14 +36,15 @@ class TileMap(object):
             for column in range(self.map_width):
                 self.mapcost[column].append(self.tilecost[data["map"]["tiles"][column][row]])
 
-        print self.mapcost
-
         self.init = True
 
 
 
     def pixeltotile(self, pixel):
         return (math.floor(pixel[0]/self.tile_width), math.floor(pixel[1]/self.tile_height))
+
+    def tilecenter(self, tile):
+        return (tile[0]*self.tile_width-(self.tile_width/2), tile[1]*self.tile_height-(self.tile_height/2))
 
     def initialised(self):
         return self.init

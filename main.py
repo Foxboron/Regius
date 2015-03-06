@@ -18,8 +18,11 @@ def main():
     data = net.read()
     car.initmap(data)
 
+    net.write(0)
+    car.update(net.read())
+
     while True:
-        net.write(0)
+        net.write(car.getmove())
         car.update(net.read())
 
 
