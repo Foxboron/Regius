@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import math
 import json
+from vector import Vector
 
 class TileMap(object):
     init = False
@@ -41,13 +42,13 @@ class TileMap(object):
 
 
     def pixeltotile(self, pixel):
-        return (int(math.floor(pixel[0]/self.tile_width)), int(math.floor(pixel[1]/self.tile_height)))
+        return Vector(int(math.floor(pixel.x/self.tile_width)), int(math.floor(pixel.y/self.tile_height)))
 
     def pixelintile(self, pixel, tile):
         return self.pixeltotile(pixel) == tile
 
     def tilecenter(self, tile):
-        return (tile[0]*self.tile_width-(self.tile_width/2), tile[1]*self.tile_height-(self.tile_height/2))
+        return Vector(tile.x*self.tile_width-(self.tile_width/2), tile.y*self.tile_height-(self.tile_height/2))
 
     def initialised(self):
         return self.init

@@ -33,6 +33,9 @@ class Vector(object):
     def __mul__(self, factor):
         return Vector(self.x * factor, self.y * factor)
 
+    def mul(self, factor):
+        return Vector(self.x * factor.x, self.y * factor.y)
+
     def __imul__(self, factor):
         ret = self.copy()
         ret.x *= factor
@@ -45,6 +48,10 @@ class Vector(object):
         ret.y /= dividend
 
         return ret
+
+    def __iter__(self):
+        for v in (self.x, self.y):
+            yield v
 
     def copy(self):
         return Vector(self.x, self.y)
@@ -63,6 +70,7 @@ class Vector(object):
         self = ret
         return self'''
 
-    def angle(self, other): 
-        rads = math.atan2(-other.y, other.x) - math.atan2(-self.y, self.x)
-        return math.degrees(rads)
+    def angle(self, other):
+        targetAngel = (math.atan2(other.y, other.x) * 180/math.pi) + 180
+        kartAngel = (math.atan2(self.y, self.x) * 180/math.pi) + 180
+        return targetAngel - kartAngel

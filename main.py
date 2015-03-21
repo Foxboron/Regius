@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import random
+import time
 
 from Regius.network import Network
 from Regius.car import Car
@@ -24,6 +25,7 @@ def main():
     while True:
         net.write(car.getmove())
         car.update(net.read())
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":

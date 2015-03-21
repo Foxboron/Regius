@@ -2,6 +2,7 @@ import json
 import math
 from tilemap import TileMap
 from collections import deque
+from vector import Vector
 
 
 class Car(object):
@@ -20,9 +21,9 @@ class Car(object):
         self.name = "Regius"
         self.mytile = 0
         self.nexttile = 1
-        self.position = (10, 10)
-        self.direction = (10, 10)
-        self.velocity = (10, 10)
+        self.position = Vector(10, 10)
+        self.direction = Vector(10, 10)
+        self.velocity = Vector(10, 10)
         self.tilemap = TileMap()
 
     def initmap(self, data):
@@ -30,7 +31,8 @@ class Car(object):
         self.id = data["id"]
 
         for waypoint in data["map"]["path"]:
-            self.waypoints.append((waypoint["tile_x"], waypoint["tile_y"]))
+            vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
+            self.waypoints.append(vec)
 
         print self.tilemap.tilecenter(self.waypoints[self.nexttile])
 
@@ -40,9 +42,9 @@ class Car(object):
             for car in range(len(data["cars"])):
                 car = data["cars"][car]
                 if car["id"] == self.id:
-                    self.position = (car["pos"]["x"], car["pos"]["y"])
-                    self.velocity = (car["velocity"]["x"], car["velocity"]["y"])
-                    self.direction = (car["direction"]["x"], car["direction"]["y"])
+                    self.position = Vector(car["pos"]["x"], car["pos"]["y"])
+                    self.velocity = Vector(car["velocity"]["x"], car["velocity"]["y"])
+                    self.direction = Vector(car["direction"]["x"], car["direction"]["y"])
 
         self.turntowards(self.waypoints[self.nexttile])
 
@@ -52,23 +54,24 @@ class Car(object):
 
     def turntowards(self, tile):
         tilepos = self.tilemap.tilecenter(tile)
-        distvector = self.distance(self.position, tilepos)
-        normaldist = self.normalized(distvector)
-        normaldir = self.normalized(self.direction)
+        distvector = self.position - tilepos
+        normaldist = distvector.normalize()
+        normaldir = self.direction.normalize()
 
-        turnangle = self.angle(normaldir, normaldist)
-        if turnangle > 20 or turnangle < -20:
+        turnangle = normaldist.angle(normaldir)
+        print turnangle
+        if turnangle == 0:
+            pass
+        else:
             if turnangle < 0:
                 self.commandlist.append(self.movements["left"])
             else:
                 self.commandlist.append(self.movements["right"])
-        else:
-            self.commandlist.append(self.movements["up"])
 
     def getmove(self):
         output = 0
 
         if len(self.commandlist) > 0:
-            output += self.commandlist.popleft()
+            output += self.commandlist.pop()
 
         return output
