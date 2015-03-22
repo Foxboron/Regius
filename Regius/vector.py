@@ -53,6 +53,9 @@ class Vector(object):
         for v in (self.x, self.y):
             yield v
 
+    def __eq__(self,comp):
+        return self.x == comp.x and self.y == comp.y
+
     def copy(self):
         return Vector(self.x, self.y)
 

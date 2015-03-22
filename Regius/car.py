@@ -21,7 +21,7 @@ class Car(object):
         self.name = "Regius"
         self.mytile = 0
         # Testing
-        self.nexttile = 3
+        self.nexttile = 1
         self.position = Vector(10, 10)
         self.direction = Vector(10, 10)
         self.velocity = Vector(10, 10)
@@ -39,7 +39,6 @@ class Car(object):
     def update(self, data):
         # update map and car info
         if data:
-
             for car in range(len(data["cars"])):
                 car = data["cars"][car]
                 if car["id"] == self.id:
@@ -51,9 +50,8 @@ class Car(object):
             print "Tile pos: "+str(self.tilemap.tilecenter(self.waypoints[self.nexttile]))
 
             self.turntowards(self.waypoints[self.nexttile])
-            
+             
             if self.tilemap.pixelintile(self.position, self.waypoints[self.nexttile]):
-                print "Heyho"
                 self.nexttile += 1
                 self.mytile += 1
 
@@ -63,15 +61,16 @@ class Car(object):
         normaldist = distvector.normalize()
         normaldir = self.direction.normalize()
 
-        turnangle = self.direction.angle(tilepos)
-        if turnangle >= 10 or turnangle <= -10:
-            if turnangle < 0 :
-                print "Left: "+str(turnangle)
-                self.commandlist.append(self.movements["left"])
-            else:
-                print "Right: "+str(turnangle)
-                self.commandlist.append(self.movements["right"])
-        else:
+        angle = self.direction.angle(tilepos)
+        threshold = 8
+        if ((angle > threshold and angle < 180-threshold) or angle < -180 - threshold):
+            print "Right: "+str(angle)
+            self.commandlist.append(self.movements["right"])
+        elif ((angle < 0 - threshold and angle > -180 + threshold) or angle > 180 + threshold):
+            print "Left: "+str(angle)
+            self.commandlist.append(self.movements["left"])
+        elif (angle >= 0 - threshold and angle <= threshold):
+            print "Up: "+str(angle)
             self.commandlist.append(self.movements["up"])
 
     def getmove(self):

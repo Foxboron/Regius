@@ -40,6 +40,10 @@ class TileMap(object):
         self.init = True
 
 
+    def current_tile(self, pos):
+        pass
+
+
 
     def pixeltotile(self, pixel):
         return Vector(int(math.floor(pixel.x/self.tile_width)), int(math.floor(pixel.y/self.tile_height)))
