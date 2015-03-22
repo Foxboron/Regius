@@ -71,6 +71,7 @@ class Vector(object):
         return self'''
 
     def angle(self, other):
-        targetAngel = (math.atan2(other.y, other.x) * 180/math.pi) + 180
-        kartAngel = (math.atan2(self.y, self.x) * 180/math.pi) + 180
-        return targetAngel - kartAngel
+        targetAngle = (math.atan2(-other.y, other.x) * 180/math.pi) + 180
+        kartAngle = (math.atan2(-self.y, self.x) * 180/math.pi) + 180
+
+        return int(targetAngle - kartAngle)
