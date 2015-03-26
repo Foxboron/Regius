@@ -39,7 +39,7 @@ class Car(object):
             vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
             self.waypoints.append(self.tilemap.tilecenter(vec))
         for mod in data["map"]["modifiers"]:
-            if mod["type"] in ("mud",):
+            if mod["type"] in ("mud","ice"):
                 self.obstacles.append(mod)
 
 
