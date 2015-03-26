@@ -29,7 +29,7 @@ class Network(object):
 
     def write(self, msg):
         try:
-            print "Sent: "+str(msg)
+            # print "Sent: "+str(msg)
             self.soc.sendall(str(msg)+"\n")
         except:
             pass

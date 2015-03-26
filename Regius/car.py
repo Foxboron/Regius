@@ -3,6 +3,7 @@ import math
 from tilemap import TileMap
 from collections import deque
 from vector import Vector
+from direction import DirectionManager
 
 
 class Car(object):
@@ -28,6 +29,8 @@ class Car(object):
         self.test_velocity = Vector(10, 10)
         self.tilemap = TileMap()
 
+        self.obstacles = []
+
     def initmap(self, data):
         self.tilemap.initmap(data)
         self.id = data["id"]
@@ -35,24 +38,19 @@ class Car(object):
         for waypoint in data["map"]["path"]:
             vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
             self.waypoints.append(self.tilemap.tilecenter(vec))
+        for mod in data["map"]["modifiers"]:
+            if mod["type"] in ("mud",):
+                self.obstacles.append(mod)
 
-        print self.waypoints
 
     def get_close_tile(self):
         target = self.waypoints[self.nexttile]
-        print round(self.position.distance(target))
-        if(round(self.position.distance(target)) <= 100):
+        # print round(self.position.distance(target))
+        if(round(self.position.distance(target)) <= 110):
             self.nexttile += 1
         if(self.nexttile == len(self.waypoints)-1):
             self.nexttile = 0
         return self.waypoints[self.nexttile]
-
-    def seek(self, tar):
-        new = Vector(0,0)
-        desired = tar-self.position
-#        desired = desired.normalize()
-        return desired
-
 
     def update(self, data):
         # update map and car info
@@ -65,37 +63,38 @@ class Car(object):
                     self.direction = Vector(car["direction"]["x"], car["direction"]["y"])
 
             tile_pos = self.get_close_tile()
-            print "Pos: " + str(self.position)
-            print "Direction: "+str(self.direction)
-            print "Velocity: "+str(self.velocity)
-            print "Tile pos: "+str(tile_pos)
+            # print "Pos: " + str(self.position)
+            # print "Direction: "+str(self.direction)
+            # print "Velocity: "+str(self.velocity)
+            # print "Tile pos: "+str(tile_pos)
+
+            self.dm = DirectionManager(self.position, self.direction, self.velocity)
 
             self.move(tile_pos)
 
 
     def move(self, tilepos):
         #tilepos = Vector(800, 167)
-
-        tile = tilepos.normalize()
         target = tilepos - self.position
         target = target.normalize()
         dir = self.direction.normalize()
 
         dir_angle = dir.angle()
         target_angle = target.angle()
-        print "Dir angle: " + str(dir_angle)
-        print "Target angle: " + str(target_angle)
+        # print "Dir angle: " + str(dir_angle)
+        # print "Target angle: " + str(target_angle)
         angle = target_angle - dir_angle
+        angle += self.dm.avoid(self.obstacles)
         threshold = 10
 
         if ((angle > threshold and angle < 180-threshold) or angle < -180 - threshold):
-            print "Left: "+str(angle)
+            # print "Left: "+str(angle)
             self.commandlist.append(self.movements["left"])
         elif ((angle < 0 - threshold and angle > -180 + threshold) or angle > 180 + threshold):
-            print "Right: "+str(angle)
+            # print "Right: "+str(angle)
             self.commandlist.append(self.movements["right"])
         elif(angle >= 0 - threshold and angle <= threshold):
-            print "Up: "+str(angle)
+            # print "Up: "+str(angle)
             self.commandlist.append(self.movements["up"])
         else:
             pass

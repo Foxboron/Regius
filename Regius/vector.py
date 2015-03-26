@@ -22,7 +22,14 @@ class Vector(object):
         return '(%.3f, %.3f)' % (self.x, self.y)
 
     def __sub__(self, other):
-        return Vector(self.x - other.x, self.y - other.y)
+        if isinstance(other, Vector):
+            return Vector(self.x - other.x, self.y - other.y)
+        return Vector(self.x - other, self.y - other)
+
+    def __div__(self, other):
+        if isinstance(other, Vector):
+            return Vector(self.x / other.x, self.y / other.y)
+        return Vector(self.x / other, self.y / other)
 
     def __isub__(self, other):
         ret = self.copy()
@@ -31,10 +38,9 @@ class Vector(object):
         return ret
 
     def __mul__(self, factor):
-        return Vector(self.x * factor.x, self.y * factor.y)
-
-    def mul(self, factor):
-        return Vector(self.x * factor.x, self.y * factor.y)
+        if isinstance(factor, Vector):
+            return Vector(self.x * factor.x, self.y * factor.y)
+        return Vector(self.x * factor, self.y * factor)
 
     def __imul__(self, factor):
         ret = self.copy()
@@ -76,8 +82,7 @@ class Vector(object):
         return self'''
 
     def distance(self, other):
-        s = (self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y)
-        return math.sqrt((self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y))
+        return math.sqrt(((self.x - other.x) * (self.x - other.x)) + ((self.y - other.y) * (self.y - other.y)))
 
     def angle(self):
         kartAngle = (math.atan2(-self.y, self.x) * 180/math.pi) + 180
