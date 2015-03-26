@@ -22,7 +22,7 @@ class Vector(object):
         return '(%.3f, %.3f)' % (self.x, self.y)
 
     def __sub__(self, other):
-        return Vector(self.x - other.x, self.y - other.x)
+        return Vector(self.x - other.x, self.y - other.y)
 
     def __isub__(self, other):
         ret = self.copy()
@@ -79,11 +79,7 @@ class Vector(object):
         s = (self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y)
         return math.sqrt((self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y))
 
-    def angle(self, other):
-        targetAngle = (math.atan2(-other.y, other.x) * 180/math.pi) + 180
+    def angle(self):
         kartAngle = (math.atan2(-self.y, self.x) * 180/math.pi) + 180
 
-        return int(kartAngle-targetAngle)
-        # return math.atan2(other.y, other.x)- math.atan2(self.y, self.x) * 180/math.pi
-        # rads = math.atan2(-other.y, other.x) - math.atan2(-self.y, self.x)
-        # return math.degrees(rads)
+        return kartAngle

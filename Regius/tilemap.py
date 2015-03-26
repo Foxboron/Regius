@@ -52,7 +52,7 @@ class TileMap(object):
         return self.pixeltotile(pixel) == tile
 
     def tilecenter(self, tile):
-        return Vector(tile.x*self.tile_width-(self.tile_width/2), tile.y*self.tile_height-(self.tile_height/2))
+        return Vector(tile.x*self.tile_width+(self.tile_width/2), tile.y*self.tile_height+(self.tile_height/2))
 
     def pixel_to_pos(self,pixel):
         return self.tilecenter(self.pixeltotile(pixel))

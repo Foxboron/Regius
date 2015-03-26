@@ -21,7 +21,7 @@ class Car(object):
         self.name = "Regius"
         self.mytile = 0
         # Testing
-        self.nexttile = 2
+        self.nexttile = 1
         self.position = Vector(10, 10)
         self.direction = Vector(10, 10)
         self.velocity = Vector(10, 10)
@@ -36,11 +36,12 @@ class Car(object):
             vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
             self.waypoints.append(self.tilemap.tilecenter(vec))
 
+        print self.waypoints
 
     def get_close_tile(self):
         target = self.waypoints[self.nexttile]
         print round(self.position.distance(target))
-        if(round(self.position.distance(target)) <= 10):
+        if(round(self.position.distance(target)) <= 100):
             self.nexttile += 1
         if(self.nexttile == len(self.waypoints)-1):
             self.nexttile = 0
@@ -73,28 +74,33 @@ class Car(object):
 
 
     def move(self, tilepos):
-#        tilepos = Vector(655,110)
+        #tilepos = Vector(800, 167)
 
         tile = tilepos.normalize()
-        dist = self.position - tilepos
-        dist = dist.normalize()
+        target = tilepos - self.position
+        target = target.normalize()
         dir = self.direction.normalize()
-        self.position = self.position + self.velocity
 
-        angle = self.position.angle(tilepos.normalize())
-        threshold = 2
+        dir_angle = dir.angle()
+        target_angle = target.angle()
+        print "Dir angle: " + str(dir_angle)
+        print "Target angle: " + str(target_angle)
+        angle = target_angle - dir_angle
+        threshold = 10
+
         if ((angle > threshold and angle < 180-threshold) or angle < -180 - threshold):
-            print "Right: "+str(angle)
-            self.commandlist.append(self.movements["right"])
-        elif ((angle < 0 - threshold and angle > -180 + threshold) or angle > 180 + threshold):
             print "Left: "+str(angle)
             self.commandlist.append(self.movements["left"])
-        elif (angle >= 0 - threshold and angle <= threshold):
+        elif ((angle < 0 - threshold and angle > -180 + threshold) or angle > 180 + threshold):
+            print "Right: "+str(angle)
+            self.commandlist.append(self.movements["right"])
+        elif(angle >= 0 - threshold and angle <= threshold):
             print "Up: "+str(angle)
             self.commandlist.append(self.movements["up"])
         else:
-            print "Nothing: "+str(angle)
-            #self.commandlist.append(self.movements["up"])
+            pass
+            # print "Nothing: "+str(angle)
+            # self.commandlist.append(self.movements["up"])
 
     def getmove(self):
         output = 1<<0
