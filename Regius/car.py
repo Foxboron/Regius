@@ -75,15 +75,9 @@ class Car(object):
 
     def move(self, tilepos):
         #tilepos = Vector(800, 167)
-        target = tilepos - self.position
-        target = target.normalize()
-        dir = self.direction.normalize()
-
-        dir_angle = dir.angle()
-        target_angle = target.angle()
-        # print "Dir angle: " + str(dir_angle)
-        # print "Target angle: " + str(target_angle)
-        angle = target_angle - dir_angle
+        # We first find the dir we want to walk towards
+        angle = self.dm.seek(tilepos)
+        # Then e mofidy the angle with objects to avoid
         angle += self.dm.avoid(self.obstacles)
         threshold = 10
 
