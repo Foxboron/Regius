@@ -31,7 +31,7 @@ class Vector(object):
         return ret
 
     def __mul__(self, factor):
-        return Vector(self.x * factor, self.y * factor)
+        return Vector(self.x * factor.x, self.y * factor.y)
 
     def mul(self, factor):
         return Vector(self.x * factor.x, self.y * factor.y)
@@ -64,6 +64,8 @@ class Vector(object):
 
     def normalize(self):
         veclen = self.vectorlen()
+        if veclen == 0:
+            return Vector(0.0, 0.0)
         return Vector(self.x / veclen, self.y / veclen)
 
     '''def normalize(self):
@@ -73,8 +75,15 @@ class Vector(object):
         self = ret
         return self'''
 
+    def distance(self, other):
+        s = (self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y)
+        return math.sqrt((self.x - other.x) * (self.x - other.x) + (self.y - other.y) * (self.y - other.y))
+
     def angle(self, other):
         targetAngle = (math.atan2(-other.y, other.x) * 180/math.pi) + 180
         kartAngle = (math.atan2(-self.y, self.x) * 180/math.pi) + 180
 
-        return int(targetAngle - kartAngle)
+        return int(kartAngle-targetAngle)
+        # return math.atan2(other.y, other.x)- math.atan2(self.y, self.x) * 180/math.pi
+        # rads = math.atan2(-other.y, other.x) - math.atan2(-self.y, self.x)
+        # return math.degrees(rads)

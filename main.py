@@ -19,13 +19,16 @@ def main():
     data = net.read()
     car.initmap(data)
 
-    net.write(0)
+    net.write(1)
     car.update(net.read())
+    #net.write(1)
+    #net.read()
 
     while True:
-        net.write(car.getmove())
-        car.update(net.read())
-        time.sleep(0.5)
+        s = net.read()
+        if s:
+            car.update(s)
+            net.write(car.getmove())
 
 
 if __name__ == "__main__":

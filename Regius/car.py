@@ -21,10 +21,11 @@ class Car(object):
         self.name = "Regius"
         self.mytile = 0
         # Testing
-        self.nexttile = 1
+        self.nexttile = 2
         self.position = Vector(10, 10)
         self.direction = Vector(10, 10)
         self.velocity = Vector(10, 10)
+        self.test_velocity = Vector(10, 10)
         self.tilemap = TileMap()
 
     def initmap(self, data):
@@ -33,7 +34,23 @@ class Car(object):
 
         for waypoint in data["map"]["path"]:
             vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
-            self.waypoints.append(vec)
+            self.waypoints.append(self.tilemap.tilecenter(vec))
+
+
+    def get_close_tile(self):
+        target = self.waypoints[self.nexttile]
+        print round(self.position.distance(target))
+        if(round(self.position.distance(target)) <= 10):
+            self.nexttile += 1
+        if(self.nexttile == len(self.waypoints)-1):
+            self.nexttile = 0
+        return self.waypoints[self.nexttile]
+
+    def seek(self, tar):
+        new = Vector(0,0)
+        desired = tar-self.position
+#        desired = desired.normalize()
+        return desired
 
 
     def update(self, data):
@@ -46,23 +63,26 @@ class Car(object):
                     self.velocity = Vector(car["velocity"]["x"], car["velocity"]["y"])
                     self.direction = Vector(car["direction"]["x"], car["direction"]["y"])
 
-            print "Pos: "+str(self.position)
-            print "Tile pos: "+str(self.tilemap.tilecenter(self.waypoints[self.nexttile]))
+            tile_pos = self.get_close_tile()
+            print "Pos: " + str(self.position)
+            print "Direction: "+str(self.direction)
+            print "Velocity: "+str(self.velocity)
+            print "Tile pos: "+str(tile_pos)
 
-            self.turntowards(self.waypoints[self.nexttile])
-             
-            if self.tilemap.pixelintile(self.position, self.waypoints[self.nexttile]):
-                self.nexttile += 1
-                self.mytile += 1
+            self.move(tile_pos)
 
-    def turntowards(self, tile):
-        tilepos = self.tilemap.tilecenter(tile)
-        distvector = self.position - tilepos
-        normaldist = distvector.normalize()
-        normaldir = self.direction.normalize()
 
-        angle = self.direction.angle(tilepos)
-        threshold = 8
+    def move(self, tilepos):
+#        tilepos = Vector(655,110)
+
+        tile = tilepos.normalize()
+        dist = self.position - tilepos
+        dist = dist.normalize()
+        dir = self.direction.normalize()
+        self.position = self.position + self.velocity
+
+        angle = self.position.angle(tilepos.normalize())
+        threshold = 2
         if ((angle > threshold and angle < 180-threshold) or angle < -180 - threshold):
             print "Right: "+str(angle)
             self.commandlist.append(self.movements["right"])
@@ -72,11 +92,14 @@ class Car(object):
         elif (angle >= 0 - threshold and angle <= threshold):
             print "Up: "+str(angle)
             self.commandlist.append(self.movements["up"])
+        else:
+            print "Nothing: "+str(angle)
+            #self.commandlist.append(self.movements["up"])
 
     def getmove(self):
-        output = 0
+        output = 1<<0
 
         if len(self.commandlist) > 0:
-            output += self.commandlist.pop()
+            output |= self.commandlist.pop()
 
         return output
