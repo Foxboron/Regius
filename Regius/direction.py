@@ -20,6 +20,25 @@ class DirectionManager(object):
         angle = target_angle - dir_angle
         return angle
 
+    def seek_boost(self, targets):
+        for target in targets:
+            target = Vector(target["x"],target["y"])
+            if target.distance(self.position) <= 200:
+                target = target - self.position
+                target = target.normalize()
+                dir = self.direction.normalize()
+
+                dir_angle = dir.angle()
+                target_angle = target.angle()
+                # print "Dir angle: " + str(dir_angle)
+                # print "Target angle: " + str(target_angle)
+                angle = target_angle - dir_angle
+                if angle <= 70 and angle >=-70:
+                    return angle * 9
+                return 0
+            return 0
+        return 0
+
     def intersect(self, i):
         o = Vector(i["x"],i["y"])
         return o.distance(self.ahead) <= i["width"]/2 \
@@ -34,9 +53,9 @@ class DirectionManager(object):
         avoidance = 0
         for i in obs:
             if self.intersect(i):
-                print self.ahead
                 avoidance = (self.ahead - Vector(i["x"],i["y"])).normalize()
                 return (avoidance * 2).angle()
         return avoidance
+
 
 

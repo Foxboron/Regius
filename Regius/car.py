@@ -30,6 +30,7 @@ class Car(object):
         self.tilemap = TileMap()
 
         self.obstacles = []
+        self.boosters = []
 
     def initmap(self, data):
         self.tilemap.initmap(data)
@@ -40,9 +41,18 @@ class Car(object):
             vec = Vector(x,y)
             self.waypoints.append(self.tilemap.tilecenter(vec))
 
+        # Save for backup
+        # self.waypoints = []
+        # for waypoint in data["map"]["path"]:
+        #     vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
+        #     self.waypoints.append(self.tilemap.tilecenter(vec))
+
         for mod in data["map"]["modifiers"]:
             if mod["type"] in ("mud","ice"):
                 self.obstacles.append(mod)
+        for mod in data["map"]["modifiers"]:
+            if mod["type"] in ("booster"):
+                self.boosters.append(mod)
 
 
     def get_close_tile(self):
@@ -81,6 +91,7 @@ class Car(object):
         angle = self.dm.seek(tilepos)
         # Then e mofidy the angle with objects to avoid
         angle += self.dm.avoid(self.obstacles)
+        angle += self.dm.seek_boost(self.boosters)
         threshold = 10
 
         if ((angle > threshold and angle < 180-threshold) or angle < -180 - threshold):
@@ -93,7 +104,7 @@ class Car(object):
             # print "Up: "+str(angle)
             self.commandlist.append(self.movements["up"])
         else:
-            pass
+            self.commandlist.append(self.movements["right"])
             # print "Nothing: "+str(angle)
             # self.commandlist.append(self.movements["up"])
 

@@ -33,6 +33,12 @@ class TileMap(object):
         self.x = data["map"]["path"][0]["tile_x"]
         self.y = data["map"]["path"][0]["tile_y"]
         self.tiles = ("-","|",",","`","/","\\",)
+        self.available = {"-": ["right","left"],
+                          "|": ["down","up"],
+                          "`": ["down", "left"],
+                          ",": ["left","up"],
+                          "\\": ["right","up"],
+                          "/": ["down","right"]}
 
 
         # for x in range(self.map_width):
@@ -41,37 +47,44 @@ class TileMap(object):
         # for row in range(self.map_height):
         #     for column in range(self.map_width):
         #         self.mapcost[column].append(self.tilecost[data["map"]["tiles"][column][row]])
-
-
         self.init = True
+
+
 
 
     def pivot(self,m,pos):
         y = pos[1]
         x = pos[0]
 
-        print pos
+        moves = {}
+
+
+        # Since a possible spot might be outside the map
+        # so CATCH ALL THE THINGS!
+
+        try:
+            moves["left"] = (x-1,y)
+        except: pass
+
+        try:
+            moves["right"] = (x+1,y)
+        except: pass
+
+        try:
+            moves["up"] = (x,y-1)
+        except: pass
+
+        try:
+            moves["down"] = (x,y+1)
+        except: pass
 
         main = m[y][x]
+        if main in self.tiles:
+            for i in self.available[main]:
+                if moves[i] not in self.checkpoints:
+                    return moves[i]
 
-        right = m[y][x+1]
-        down = m[y+1][x]
-        left = m[y][x-1]
-        up = m[y-1][x]
 
-        if right in self.tiles and (x+1,y) not in self.checkpoints:
-            return (x+1,y)
-
-        elif down in self.tiles and (x,y+1) not in self.checkpoints:
-            return (x,y+1)
-
-        elif left in self.tiles and (x-1,y) not in self.checkpoints:
-            return (x-1,y)
-
-        elif up in self.tiles and (x,y-1) not in self.checkpoints:
-            return (x,y-1)
-        else:
-            return None
 
     def path_finding(self):
         y,x = self.y, self.x
@@ -83,7 +96,6 @@ class TileMap(object):
                 x,y = pos[0],pos[1]
             else:
                  break
-        self.checkpoints.append((x,y))
         return self.checkpoints
 
 
