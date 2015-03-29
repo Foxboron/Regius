@@ -35,9 +35,11 @@ class Car(object):
         self.tilemap.initmap(data)
         self.id = data["id"]
 
-        for waypoint in data["map"]["path"]:
-            vec = Vector(waypoint["tile_x"], waypoint["tile_y"])
+        checkpoints = self.tilemap.path_finding()
+        for x,y in checkpoints:
+            vec = Vector(x,y)
             self.waypoints.append(self.tilemap.tilecenter(vec))
+
         for mod in data["map"]["modifiers"]:
             if mod["type"] in ("mud","ice"):
                 self.obstacles.append(mod)

@@ -28,21 +28,63 @@ class TileMap(object):
         self.map_height = len(data["map"]["tiles"][0])
         self.map_width = len(data["map"]["tiles"])
 
-        self.mapcost = []
+        self.checkpoints = []
+        self.m = data["map"]["tiles"]
+        self.x = data["map"]["path"][0]["tile_x"]
+        self.y = data["map"]["path"][0]["tile_y"]
+        self.tiles = ("-","|",",","`","/","\\",)
 
-        for x in range(self.map_width):
-            self.mapcost.append([])
 
-        for row in range(self.map_height):
-            for column in range(self.map_width):
-                self.mapcost[column].append(self.tilecost[data["map"]["tiles"][column][row]])
+        # for x in range(self.map_width):
+        #     self.mapcost.append([])
+
+        # for row in range(self.map_height):
+        #     for column in range(self.map_width):
+        #         self.mapcost[column].append(self.tilecost[data["map"]["tiles"][column][row]])
+
 
         self.init = True
 
 
-    def current_tile(self, pos):
-        pass
+    def pivot(self,m,pos):
+        y = pos[1]
+        x = pos[0]
 
+        print pos
+
+        main = m[y][x]
+
+        right = m[y][x+1]
+        down = m[y+1][x]
+        left = m[y][x-1]
+        up = m[y-1][x]
+
+        if right in self.tiles and (x+1,y) not in self.checkpoints:
+            return (x+1,y)
+
+        elif down in self.tiles and (x,y+1) not in self.checkpoints:
+            return (x,y+1)
+
+        elif left in self.tiles and (x-1,y) not in self.checkpoints:
+            return (x-1,y)
+
+        elif up in self.tiles and (x,y-1) not in self.checkpoints:
+            return (x,y-1)
+        else:
+            return None
+
+    def path_finding(self):
+        y,x = self.y, self.x
+        self.checkpoints.append((x,y))
+        while True:
+            pos = self.pivot(self.m,(x,y))
+            if pos:
+                self.checkpoints.append(pos)
+                x,y = pos[0],pos[1]
+            else:
+                 break
+        self.checkpoints.append((x,y))
+        return self.checkpoints
 
 
     def pixeltotile(self, pixel):
