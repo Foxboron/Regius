@@ -2,7 +2,7 @@ import math
 
 class Vector(object):
 
-    def __init__(self, x=0.0, y=0.0):
+    def __init__(self, x=0, y=0):
         self.x = float(x)
         self.y = float(y)
 
@@ -16,10 +16,10 @@ class Vector(object):
         return ret
 
     def __repr__(self):
-        return '%s(%.3f, %.3f)' % ("Vector", self.x, self.y)
+        return '%s(%s, %s)' % ("Vector", self.x, self.y)
 
     def __str__(self):
-        return '(%.3f, %.3f)' % (self.x, self.y)
+        return '(%s, %s)' % (self.x, self.y)
 
     def __sub__(self, other):
         if isinstance(other, Vector):

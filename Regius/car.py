@@ -36,7 +36,9 @@ class Car(object):
         self.tilemap.initmap(data)
         self.id = data["id"]
 
-        checkpoints = self.tilemap.path_finding()
+        self.m = data["map"]["path"]
+
+        checkpoints = self.init_checkpoints()
         for x,y in checkpoints:
             vec = Vector(x,y)
             self.waypoints.append(self.tilemap.tilecenter(vec))
@@ -53,6 +55,20 @@ class Car(object):
         for mod in data["map"]["modifiers"]:
             if mod["type"] in ("booster"):
                 self.boosters.append(mod)
+
+
+    def init_checkpoints(self):
+        points = [(i["tile_x"],i["tile_y"]) for i in self.m]
+        checkpoints = []
+        self.tilemap.actual_start = points[0]
+        while True:
+            try:
+                start = points.pop(0)
+                end = points.pop(0)
+            except: break
+            for i in self.tilemap.process(start, end):
+                checkpoints.append(i)
+        return checkpoints
 
 
     def get_close_tile(self):
@@ -80,7 +96,7 @@ class Car(object):
             # print "Velocity: "+str(self.velocity)
             # print "Tile pos: "+str(tile_pos)
 
-            self.dm = DirectionManager(self.position, self.direction, self.velocity)
+            self.dm = DirectionManager(self.position, self.direction, self.velocity,self.tilemap)
 
             self.move(tile_pos)
 
