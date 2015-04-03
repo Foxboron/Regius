@@ -60,14 +60,18 @@ class Car(object):
     def init_checkpoints(self):
         points = [(i["tile_x"],i["tile_y"]) for i in self.m]
         checkpoints = []
-        self.tilemap.actual_start = points[0]
+        #self.tilemap.actual_start = points[0]
+        start = points.pop(0)
+        end = points.pop(0)
         while True:
+            for i in self.tilemap.process(start, end):
+                if i not in checkpoints:
+                    checkpoints.append(i)
             try:
-                start = points.pop(0)
+                start = end
                 end = points.pop(0)
             except: break
-            for i in self.tilemap.process(start, end):
-                checkpoints.append(i)
+            print checkpoints
         return checkpoints
 
 

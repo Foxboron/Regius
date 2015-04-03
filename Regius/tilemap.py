@@ -160,7 +160,7 @@ class TileMap(object):
         cell = self.end
         self.ll = []
         self.ll.append(self.end.xy)
-        while cell.parent is not self.actual_start:
+        while cell.parent is not self.start:
             cell = cell.parent
             if not cell:
                 break
@@ -183,6 +183,7 @@ class TileMap(object):
 
     def process(self, start, end):
         self.cl = set()
+        self.op = []
         # add starting cell to open heap queue
         self.start = self.get_cell(start[0], start[1])
         self.end = self.get_cell(end[0], end[1])
